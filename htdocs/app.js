@@ -1,14 +1,18 @@
+function newTodo (desc) {
+	return { desc, done: false, pri:'C', matches:true, order:'C' };
+}
+
 window.addEventListener('load', function () {
 	var vue = new Vue({
 		el: '#app',
 		data: {
 			numberOfCols: 3,
 			allTodos: [
-				{desc:'First',  done:false, pri:'C', matches:true,},
-				{desc:'Second', done:false, pri:'C', matches:true,},
-				{desc:'Third',  done:false, pri:'C', matches:true,},
-				{desc:'Fourth', done:false, pri:'C', matches:true,},
-				{desc:'Fifth',  done:false, pri:'C', matches:true,},
+				newTodo('First'),
+				newTodo('Second'),
+				newTodo('Third'),
+				newTodo('Fourth'),
+				newTodo('Fifth'),
 			],
 			addTodoTextbox: '',
 			searchMode: 'Open',
@@ -16,7 +20,7 @@ window.addEventListener('load', function () {
 		},
 		computed: {
 			matchingTodos: function() {
-				return this.allTodos.filter( t => t.matches );
+				return _.sortBy(this.allTodos.filter( t => t.matches ), 'order');
 			},
 			chunkedTodos: function() {
 				return _.chunk(this.matchingTodos, this.numberOfCols);
@@ -24,7 +28,7 @@ window.addEventListener('load', function () {
 		},
 		methods: {
 			addTodo: function() {
-				this.allTodos.push({desc:this.addTodoTextbox, done:false, pri:'C', matches:true,});
+				this.allTodos.push(newTodo(this.addTodoTextbox));
 				this.addTodoTextbox = '';
 			},
 			todoDoneClass: function(todo) {
@@ -46,6 +50,7 @@ window.addEventListener('load', function () {
 			search: function() {
 				for (todo of this.allTodos) {
 					todo.matches = this.searchMode == 'Open' ? ! todo.done : todo.done;
+					todo.order = this.searchMode == 'Open' ? todo.pri : -todo.done;
 				}
 			},
 		},
