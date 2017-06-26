@@ -14,33 +14,27 @@
 	<body style="padding:5px;">
 		<div id="app" class="container-fluid">
 			<div class="row">
-				<div class="col-md-4">
+				<div class="col-sm-4">
 					<input v-model="addTodoTextbox" class="form-control" placeholder="Add Todo" @change="addTodo">
 				</div>
-				<div class="col-md-3"></div>
-				<div class="col-md-1">
+				<div class="col-sm-3"></div>
+				<div class="col-sm-1">
 					<button class="btn btn-block" type="button" @click="clickSearchMode">{{searchMode}}</button>
 				</div>
-				<div class="col-md-4">
+				<div class="col-sm-4">
 					<input class="form-control" placeholder="Search">
 				</div>
 			</div>
 			<br>
-			<table class="table">
-				<tbody>
-					<template v-for="todos in chunkedTodos">
-						<tr>
-							<template v-for="todo in todos">
-								<td>
-									<span :class="todoDoneClass(todo)" @click="toggleDone(todo)"></span> &nbsp;
-									<button :class="priClass(todo)" type="button" @click="clickPri(todo)">{{todo.pri}}</button> &nbsp;
-									{{todo.desc}}
-								</td>
-							</template>
-						</tr>
-					</template>
-				</tbody>
-			</table>
+			<table class="table"><tbody>
+				<tr v-for="todos in chunkedTodos">
+					<td v-for="todo in todos">
+						<span :class="todoDoneClass(todo)" @click="toggleDone(todo)"></span> &nbsp;
+						<button :class="priClass(todo)" type="button" @click="clickPri(todo)">{{todo.pri}}</button> &nbsp;
+						{{todo.desc}}
+					</td>
+				</tr>
+			</tbody></table>
 		</div>
 
 		<script src="app.js"></script>

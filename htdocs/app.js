@@ -18,9 +18,6 @@ window.addEventListener('load', function () {
 			matchingTodos: function() {
 				return this.allTodos.filter( t => t.matches );
 			},
-			numberOfRows: function() {
-				return Math.ceil(this.allTodos.length / this.numberOfCols);
-			},
 			chunkedTodos: function() {
 				return _.chunk(this.matchingTodos, this.numberOfCols);
 			},
