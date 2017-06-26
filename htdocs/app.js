@@ -17,6 +17,7 @@ window.addEventListener('load', function () {
 			addTodoTextbox: '',
 			searchMode: 'Open',
 			searchText: '',
+			editing: false,
 		},
 		computed: {
 			matchingTodos: function() {
@@ -28,7 +29,9 @@ window.addEventListener('load', function () {
 		},
 		methods: {
 			addTodo: function() {
-				this.allTodos.push(newTodo(this.addTodoTextbox));
+				if (this.editing) this.editing.desc = this.addTodoTextbox;
+				else this.allTodos.push(newTodo(this.addTodoTextbox));
+				this.editing = false;
 				this.addTodoTextbox = '';
 			},
 			todoDoneClass: function(todo) {
@@ -52,6 +55,11 @@ window.addEventListener('load', function () {
 					todo.matches = this.searchMode == 'Open' ? ! todo.done : todo.done;
 					todo.order = this.searchMode == 'Open' ? todo.pri : -todo.done;
 				}
+			},
+			editTodo: function(todo) {
+				this.editing = todo;
+				this.addTodoTextbox = todo.desc;
+				this.$refs.addTodoTextbox.focus();
 			},
 		},
 	});
