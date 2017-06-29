@@ -1,5 +1,5 @@
 function newTodo (desc) {
-	return { desc, done: false, pri:'C', matches:true, order:'C' };
+	return { desc, open: Date.now(), done: false, pri:'C', matches:true, order:'C' };
 }
 
 window.addEventListener('load', function () {
@@ -53,13 +53,17 @@ window.addEventListener('load', function () {
 			search: function() {
 				for (todo of this.allTodos) {
 					todo.matches = this.searchMode == 'Open' ? ! todo.done : todo.done;
-					todo.order = this.searchMode == 'Open' ? todo.pri : -todo.done;
+					todo.order = this.searchMode == 'Open' ? ((todo.pri == 'A' ? 1 : todo.pri == 'B' ? 2 : 3) * todo.open) : -todo.done;
 				}
 			},
 			editTodo: function(todo) {
 				this.editing = todo;
 				this.addTodoTextbox = todo.desc;
 				this.$refs.addTodoTextbox.focus();
+			},
+			shortDate: function(ms) {
+				var d = new Date(ms);
+				return '' + (d.getMonth() + 1) + '/' + d.getDate();
 			},
 		},
 	});

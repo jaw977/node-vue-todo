@@ -30,7 +30,12 @@
 				<tr v-for="todos in chunkedTodos">
 					<td v-for="todo in todos">
 						<span :class="todoDoneClass(todo)" @click="toggleDone(todo)"></span> &nbsp;
-						<button :class="priClass(todo)" type="button" @click="clickPri(todo)">{{todo.pri}}</button> &nbsp;
+						<template v-if="todo.done">{{shortDate(todo.done)}}</template>
+						<template v-else>
+							<button :class="priClass(todo)" type="button" @click="clickPri(todo)">{{todo.pri}}</button> &nbsp;
+							{{shortDate(todo.open)}}
+						</template>
+						&nbsp;
 						<span @dblclick="editTodo(todo)">{{todo.desc}}</span>
 					</td>
 				</tr>
