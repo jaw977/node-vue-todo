@@ -17,33 +17,39 @@
 	</head>
 	<body style="padding:5px;">
 		<div id="app" class="container-fluid">
-			<div class="row">
-				<div class="col-sm-4">
-					<input v-model="addTodoTextbox" ref="addTodoTextbox" class="form-control" placeholder="Add Todo" @keydown="addTodo">
+			<template v-if="mode=='import'">
+				<button type="button" class="btn btn-primary" @click="importTodos">Import</button>
+				<textarea class="form-control" v-model="importTextarea" rows="30"></textarea>
+			</template>
+			<template v-else>
+				<div class="row">
+					<div class="col-sm-4">
+						<input v-model="addTodoTextbox" ref="addTodoTextbox" class="form-control" placeholder="Add Todo" @keydown="addTodo">
+					</div>
+					<div class="col-sm-3"></div>
+					<div class="col-sm-1">
+						<button class="btn btn-block" type="button" @click="clickSearchMode">{{searchMode}}</button>
+					</div>
+					<div class="col-sm-4">
+						<input class="form-control" placeholder="Search">
+					</div>
 				</div>
-				<div class="col-sm-3"></div>
-				<div class="col-sm-1">
-					<button class="btn btn-block" type="button" @click="clickSearchMode">{{searchMode}}</button>
-				</div>
-				<div class="col-sm-4">
-					<input class="form-control" placeholder="Search">
-				</div>
-			</div>
-			<br>
-			<table class="table"><tbody>
-				<tr v-for="todos in chunkedTodos">
-					<td v-for="todo in todos">
-						<span :class="todoDoneClass(todo)" @click="toggleDone(todo)"></span> &nbsp;
-						<template v-if="todo.done">{{shortDate(todo.done)}}</template>
-						<template v-else>
-							<button :class="priClass(todo)" type="button" @click="clickPri(todo)">{{todo.pri}}</button> &nbsp;
-							<span :class="descClass(todo)" @dblclick="editTodo(todo,'open')">{{shortDate(todo.open)}}</span>
-						</template>
-						&nbsp;
-						<span :class="descClass(todo)" @dblclick="editTodo(todo,'desc')">{{todo.desc}}</span>
-					</td>
-				</tr>
-			</tbody></table>
+				<br>
+				<table class="table"><tbody>
+					<tr v-for="todos in chunkedTodos">
+						<td v-for="todo in todos">
+							<span :class="todoDoneClass(todo)" @click="toggleDone(todo)"></span> &nbsp;
+							<template v-if="todo.done">{{shortDate(todo.done)}}</template>
+							<template v-else>
+								<button :class="priClass(todo)" type="button" @click="clickPri(todo)">{{todo.pri}}</button> &nbsp;
+								<span :class="descClass(todo)" @dblclick="editTodo(todo,'open')">{{shortDate(todo.open)}}</span>
+							</template>
+							&nbsp;
+							<span :class="descClass(todo)" @dblclick="editTodo(todo,'desc')">{{todo.desc}}</span>
+						</td>
+					</tr>
+				</tbody></table>
+			</template>
 		</div>
 
 		<script src="app.js"></script>

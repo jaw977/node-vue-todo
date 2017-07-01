@@ -1,5 +1,19 @@
-function newTodo (desc) {
-	return { desc, open: Date.now(), done: false, pri:'C', matches:true, order:'C' };
+function newTodo (text) {
+	const matches = text.match(/^(x (\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d) )?(\(([ABC])\) )?(\d\d\d\d-\d\d-\d\d( \d\d:\d\d:\d\d)? )?(.+)/);
+	if (! matches) return;
+	let [,,done,,pri,open,,desc] = matches;
+	open = open ? stringToMs(open) : Date.now();
+	pri = pri || 'C';
+	done = done && stringToMs(done);
+	return { desc, open, pri, done, matches:true, order:pri };
+}
+
+function msToString(ms) {
+	return moment(ms).format(dateTimeFormat);
+}
+
+function stringToMs(str) {
+	return +moment(str, dateTimeFormat);
 }
 
 window.addEventListener('load', function () {
@@ -7,18 +21,14 @@ window.addEventListener('load', function () {
 		el: '#app',
 		data: {
 			numberOfCols: 3,
-			allTodos: [
-				newTodo('First'),
-				newTodo('Second'),
-				newTodo('Third'),
-				newTodo('Fourth'),
-				newTodo('Fifth'),
-			],
+			allTodos: [],
 			addTodoTextbox: '',
 			searchMode: 'Open',
 			searchText: '',
 			editingTodo: false,
 			editingField: false,
+			mode: 'import',
+			importTextarea: '',
 		},
 		computed: {
 			matchingTodos: function() {
@@ -33,7 +43,7 @@ window.addEventListener('load', function () {
 				if (event.keyCode != 13) return;
 				if (this.editingTodo) { 
 					if (this.editingField == 'desc') this.editingTodo.desc = this.addTodoTextbox;
-					else this.editingTodo.open = this.stringToMs(this.addTodoTextbox);
+					else this.editingTodo.open = stringToMs(this.addTodoTextbox);
 				}
 				else this.allTodos.push(newTodo(this.addTodoTextbox));
 				this.editingTodo = false;
@@ -59,7 +69,7 @@ window.addEventListener('load', function () {
 				this.search();
 			},
 			search: function() {
-				for (todo of this.allTodos) {
+				for (let todo of this.allTodos) {
 					todo.matches = this.searchMode == 'Open' ? ! todo.done : todo.done;
 					todo.order = this.searchMode == 'Open' ? ((todo.pri == 'A' ? 1 : todo.pri == 'B' ? 2 : 3) * todo.open) : -todo.done;
 				}
@@ -68,18 +78,20 @@ window.addEventListener('load', function () {
 				this.editingTodo = todo;
 				this.editingField = field;
 				if (field == 'desc') this.addTodoTextbox = todo.desc;
-				else this.addTodoTextbox = this.msToString(todo.open);
+				else this.addTodoTextbox = msToString(todo.open);
 				this.$refs.addTodoTextbox.focus();
 			},
 			shortDate: function(ms) {
 				var d = new Date(ms);
 				return '' + (d.getMonth() + 1) + '/' + d.getDate();
 			},
-			msToString: function(ms) {
-				return moment(ms).format(dateTimeFormat);
-			},
-			stringToMs: function(str) {
-				return +moment(str, dateTimeFormat);
+			importTodos: function() {
+				for (let line of this.importTextarea.split("\n")) {
+					const todo = newTodo(line);
+					if (todo) this.allTodos.push(todo);
+				}
+				this.search();
+				this.mode = false;
 			},
 		},
 	});
