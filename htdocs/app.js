@@ -93,6 +93,15 @@ window.addEventListener('load', function () {
 				this.search();
 				this.mode = false;
 			},
+			exportTodos: function() {
+				this.mode = 'import';
+				this.importTextarea = this.allTodos.map( todo => {
+					const done = todo.done ? `x ${msToString(todo.done)} ` : '';
+					const pri = todo.pri == 'A' || todo.pri == 'B' ? `(${todo.pri}) ` : '';
+					return done + pri + msToString(todo.open) + ' ' + todo.desc;
+				}).join('\n');
+				this.allTodos = [];
+			},
 		},
 	});
 });
