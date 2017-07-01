@@ -17,7 +17,8 @@ window.addEventListener('load', function () {
 			addTodoTextbox: '',
 			searchMode: 'Open',
 			searchText: '',
-			editing: false,
+			editingTodo: false,
+			editingField: false,
 		},
 		computed: {
 			matchingTodos: function() {
@@ -28,10 +29,14 @@ window.addEventListener('load', function () {
 			},
 		},
 		methods: {
-			addTodo: function() {
-				if (this.editing) this.editing.desc = this.addTodoTextbox;
+			addTodo: function(event) {
+				if (event.keyCode != 13) return;
+				if (this.editingTodo) { 
+					if (this.editingField == 'desc') this.editingTodo.desc = this.addTodoTextbox;
+					else this.editingTodo.open = this.stringToMs(this.addTodoTextbox);
+				}
 				else this.allTodos.push(newTodo(this.addTodoTextbox));
-				this.editing = false;
+				this.editingTodo = false;
 				this.addTodoTextbox = '';
 			},
 			todoDoneClass: function(todo) {
@@ -39,6 +44,9 @@ window.addEventListener('load', function () {
 			},
 			priClass: function(todo) {
 				return 'btn btn-xs' + (todo.pri == 'A' ? ' btn-danger' : todo.pri == 'B' ? ' btn-primary' : '');
+			},
+			descClass: function(todo) {
+				return todo.open > Date.now() ? 'future' : '';
 			},
 			toggleDone: function(todo) {
 				todo.done = todo.done ? false : Date.now();
@@ -56,15 +64,25 @@ window.addEventListener('load', function () {
 					todo.order = this.searchMode == 'Open' ? ((todo.pri == 'A' ? 1 : todo.pri == 'B' ? 2 : 3) * todo.open) : -todo.done;
 				}
 			},
-			editTodo: function(todo) {
-				this.editing = todo;
-				this.addTodoTextbox = todo.desc;
+			editTodo: function(todo,field) {
+				this.editingTodo = todo;
+				this.editingField = field;
+				if (field == 'desc') this.addTodoTextbox = todo.desc;
+				else this.addTodoTextbox = this.msToString(todo.open);
 				this.$refs.addTodoTextbox.focus();
 			},
 			shortDate: function(ms) {
 				var d = new Date(ms);
 				return '' + (d.getMonth() + 1) + '/' + d.getDate();
 			},
+			msToString: function(ms) {
+				return moment(ms).format(dateTimeFormat);
+			},
+			stringToMs: function(str) {
+				return +moment(str, dateTimeFormat);
+			},
 		},
 	});
 });
+
+var dateTimeFormat = 'YYYY-MM-DD HH:mm:ss';

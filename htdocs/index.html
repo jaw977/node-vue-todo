@@ -9,13 +9,17 @@
 		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.js"></script>
 		<script src="https://cdn.jsdelivr.net/bluebird/latest/bluebird.js"></script>
+		<script src="https://unpkg.com/moment@2.18.1"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<style>
+.future { color:#c0c0c0 }
+		</style>
 	</head>
 	<body style="padding:5px;">
 		<div id="app" class="container-fluid">
 			<div class="row">
 				<div class="col-sm-4">
-					<input v-model="addTodoTextbox" ref="addTodoTextbox" class="form-control" placeholder="Add Todo" @change="addTodo">
+					<input v-model="addTodoTextbox" ref="addTodoTextbox" class="form-control" placeholder="Add Todo" @keydown="addTodo">
 				</div>
 				<div class="col-sm-3"></div>
 				<div class="col-sm-1">
@@ -33,10 +37,10 @@
 						<template v-if="todo.done">{{shortDate(todo.done)}}</template>
 						<template v-else>
 							<button :class="priClass(todo)" type="button" @click="clickPri(todo)">{{todo.pri}}</button> &nbsp;
-							{{shortDate(todo.open)}}
+							<span :class="descClass(todo)" @dblclick="editTodo(todo,'open')">{{shortDate(todo.open)}}</span>
 						</template>
 						&nbsp;
-						<span @dblclick="editTodo(todo)">{{todo.desc}}</span>
+						<span :class="descClass(todo)" @dblclick="editTodo(todo,'desc')">{{todo.desc}}</span>
 					</td>
 				</tr>
 			</tbody></table>
