@@ -107,3 +107,6 @@ window.addEventListener('load', function () {
 });
 
 var dateTimeFormat = 'YYYY-MM-DD HH:mm:ss';
+
+window.onbeforeunload = () => true;
+// window.onbeforeunload = null;
