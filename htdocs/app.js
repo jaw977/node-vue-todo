@@ -24,7 +24,7 @@ window.addEventListener('load', function () {
 			allTodos: [],
 			addTodoTextbox: '',
 			searchMode: 'Open',
-			searchText: '',
+			searchTextbox: '',
 			editingTodo: false,
 			editingField: false,
 			mode: 'import',
@@ -69,8 +69,9 @@ window.addEventListener('load', function () {
 				this.search();
 			},
 			search: function() {
+				const searchText = this.searchTextbox.toLowerCase();
 				for (let todo of this.allTodos) {
-					todo.matches = this.searchMode == 'Open' ? ! todo.done : todo.done;
+					todo.matches = (this.searchMode == 'Open' ? ! todo.done : todo.done) && todo.desc.toLowerCase().includes(searchText);
 					todo.order = this.searchMode == 'Open' ? ((todo.pri == 'A' ? 1 : todo.pri == 'B' ? 2 : 3) * todo.open) : -todo.done;
 				}
 			},

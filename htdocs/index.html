@@ -34,7 +34,7 @@
 						<button class="btn btn-block" type="button" @click="clickSearchMode">{{searchMode}}</button>
 					</div>
 					<div class="col-sm-4">
-						<input class="form-control" placeholder="Search">
+						<input v-model="searchTextbox" class="form-control" placeholder="Search" @change="search">
 					</div>
 				</div>
 				<br>
