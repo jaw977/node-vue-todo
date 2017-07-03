@@ -2,7 +2,7 @@ function newTodo (text) {
 	const matches = text.match(/^(x (\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d) )?(\(([ABC])\) )?(\d\d\d\d-\d\d-\d\d( \d\d:\d\d:\d\d)? )?(.+)/);
 	if (! matches) return;
 	let [,,done,,pri,open,,desc] = matches;
-	open = open ? stringToMs(open) : Date.now();
+	open = stringToMs(open);
 	pri = pri || 'C';
 	done = done && stringToMs(done);
 	return { desc, open, pri, done, matches:true, order:pri };
@@ -13,7 +13,7 @@ function msToString(ms) {
 }
 
 function stringToMs(str) {
-	return +moment(str, dateTimeFormat);
+	return str ? +moment(str, dateTimeFormat) : Date.now();
 }
 
 window.addEventListener('load', function () {
