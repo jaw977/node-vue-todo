@@ -110,6 +110,11 @@ window.addEventListener('load', function () {
         else this.addTodoTextbox = msToString(todo.open);
         this.$refs.addTodoTextbox.focus();
       },
+      dupTodo: function(todo) {
+        this.editingTodo = false;
+        this.addTodoTextbox = todo.desc;
+        this.$refs.addTodoTextbox.focus();
+      },
       shortDate: function(ms) {
         var d = new Date(ms);
         return '' + (d.getMonth() + 1) + '/' + d.getDate();
