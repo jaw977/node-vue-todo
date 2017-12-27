@@ -1,11 +1,27 @@
+let db = new PouchDB('todos');
+
 function newTodo (text) {
   const matches = text.match(/^(x (\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d) )?(\(([ABC])\) )?(\d\d\d\d-\d\d-\d\d( \d\d:\d\d:\d\d)? )?(.+)/);
   if (! matches) return;
   let [,,done,,pri,open,,desc] = matches;
   open = stringToMs(open);
   pri = pri || 'C';
-  done = done && stringToMs(done);
-  return { desc, open, pri, done, matches:true, order:pri };
+  done = done ? stringToMs(done) : false;
+  const todo = { desc, open, pri, done };
+  db.post(todo).then( response => {
+    todo._id = response.id;
+    todo._rev = response.rev 
+  });
+  todo.matches = true;
+  todo.order = pri;
+  return todo;
+}
+
+function saveTodo (fullTodo) {
+  const { matches, order, ...todo } = fullTodo;
+  db.put(todo).then( response => {
+    fullTodo._rev = response.rev; 
+  });
 }
 
 function msToString(ms) {
@@ -27,8 +43,17 @@ window.addEventListener('load', function () {
       searchTextbox: '',
       editingTodo: false,
       editingField: false,
-      mode: 'import',
+      mode: false, //'import',
       importTextarea: '',
+    },
+    mounted: function () {
+      db.allDocs({include_docs: true}).then( result => {
+        result.rows.forEach( row => {
+          row.doc.matches = row.doc.order = false;
+          this.allTodos.push(row.doc);
+        });
+        this.search();
+      });
     },
     computed: {
       matchingTodos: function() {
@@ -44,6 +69,7 @@ window.addEventListener('load', function () {
         if (this.editingTodo) { 
           if (this.editingField == 'desc') this.editingTodo.desc = this.addTodoTextbox;
           else this.editingTodo.open = stringToMs(this.addTodoTextbox);
+          saveTodo(this.editingTodo);
         }
         else this.allTodos.push(newTodo(this.addTodoTextbox));
         this.editingTodo = false;
@@ -60,9 +86,11 @@ window.addEventListener('load', function () {
       },
       toggleDone: function(todo) {
         todo.done = todo.done ? false : Date.now();
+        saveTodo(todo);
       },
       clickPri: function(todo) {
         todo.pri = todo.pri == 'A' ? 'C' : todo.pri == 'B' ? 'A' : 'B';
+        saveTodo(todo);
       },
       clickSearchMode: function() {
         this.searchMode = this.searchMode == 'Open' ? 'Done' : 'Open';
@@ -71,7 +99,7 @@ window.addEventListener('load', function () {
       search: function() {
         const searchText = this.searchTextbox.toLowerCase();
         for (let todo of this.allTodos) {
-          todo.matches = (this.searchMode == 'Open' ? ! todo.done : todo.done) && todo.desc.toLowerCase().includes(searchText);
+          todo.matches = (this.searchMode == 'Open' ? ! todo.done : !! todo.done) && todo.desc.toLowerCase().includes(searchText);
           todo.order = this.searchMode == 'Open' ? ((todo.pri == 'A' ? 1 : todo.pri == 'B' ? 2 : 3) * todo.open) : -todo.done;
         }
       },
@@ -87,12 +115,15 @@ window.addEventListener('load', function () {
         return '' + (d.getMonth() + 1) + '/' + d.getDate();
       },
       importTodos: function() {
-        for (let line of this.importTextarea.split("\n")) {
-          const todo = newTodo(line);
-          if (todo) this.allTodos.push(todo);
-        }
-        this.search();
-        this.mode = false;
+        db.destroy().then( () => {
+          db = new PouchDB('todos');
+          for (let line of this.importTextarea.split("\n")) {
+            const todo = newTodo(line);
+            if (todo) this.allTodos.push(todo);
+          }
+          this.search();
+          this.mode = false;
+        });
       },
       exportTodos: function() {
         this.mode = 'import';
@@ -109,5 +140,5 @@ window.addEventListener('load', function () {
 
 var dateTimeFormat = 'YYYY-MM-DD HH:mm:ss';
 
-window.onbeforeunload = () => true;
+// window.onbeforeunload = () => true;
 // window.onbeforeunload = null;
