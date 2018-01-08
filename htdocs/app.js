@@ -86,6 +86,7 @@ window.addEventListener('load', function () {
       },
       toggleDone: function(todo) {
         todo.done = todo.done ? false : Date.now();
+        if (! todo.done) todo.open = Date.now();
         saveTodo(todo);
       },
       clickPri: function(todo) {
