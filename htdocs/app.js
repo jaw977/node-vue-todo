@@ -2,6 +2,7 @@ let db = new PouchDB('todos');
 
 function newTodo (text) {
   const matches = text.match(/^(x (\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d) )?(\(([ABC])\) )?(\d\d\d\d-\d\d-\d\d( \d\d:\d\d:\d\d)? )?(.+)/);
+  console.log(matches);
   if (! matches) return;
   let [,,done,,pri,open,,desc] = matches;
   open = stringToMs(open);
@@ -71,7 +72,10 @@ window.addEventListener('load', function () {
           else this.editingTodo.open = stringToMs(this.addTodoTextbox);
           saveTodo(this.editingTodo);
         }
-        else this.allTodos.push(newTodo(this.addTodoTextbox));
+        else {
+          const todo = newTodo(this.addTodoTextbox);
+          if (todo) this.allTodos.push(todo);
+        }
         this.editingTodo = false;
         this.addTodoTextbox = '';
       },
