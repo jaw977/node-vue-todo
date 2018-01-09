@@ -58,7 +58,7 @@ window.addEventListener('load', function () {
     },
     computed: {
       matchingTodos: function() {
-        return _.sortBy(this.allTodos.filter( t => t.matches ), 'order');
+        return _.sortBy(this.allTodos.filter( t => t.desc && t.matches ), 'order');
       },
       chunkedTodos: function() {
         return _.chunk(this.matchingTodos, this.numberOfCols);
@@ -68,7 +68,10 @@ window.addEventListener('load', function () {
       addTodo: function(event) {
         if (event.keyCode != 13) return;
         if (this.editingTodo) { 
-          if (this.editingField == 'desc') this.editingTodo.desc = this.addTodoTextbox;
+          if (this.editingField == 'desc') {
+            this.editingTodo.desc = this.addTodoTextbox;
+            if (! this.addTodoTextbox) this.editingTodo._deleted = true;
+          }
           else this.editingTodo.open = stringToMs(this.addTodoTextbox);
           saveTodo(this.editingTodo);
         }
