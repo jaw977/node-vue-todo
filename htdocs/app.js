@@ -86,10 +86,10 @@ window.addEventListener('load', function () {
         return 'glyphicon glyphicon-' + (todo.done ? 'check' : 'unchecked');
       },
       priClass: function(todo) {
-        return 'btn btn-xs' + (todo.pri == 'A' ? ' btn-danger' : todo.pri == 'B' ? ' btn-primary' : '');
+        return 'btn btn-xs' + (todo.pri == 'A' ? ' btn-danger' : todo.pri == 'B' ? ' btn-primary' : '') + (todo.done ? ' disabled' : '');
       },
       descClass: function(todo) {
-        return todo.open > Date.now() ? 'future' : '';
+        return todo.done ? 'done' : todo.open > Date.now() ? 'future' : '';
       },
       toggleDone: function(todo) {
         todo.done = todo.done ? false : Date.now();
@@ -97,6 +97,7 @@ window.addEventListener('load', function () {
         saveTodo(todo);
       },
       clickPri: function(todo) {
+        if (todo.done) return;
         todo.pri = todo.pri == 'A' ? 'C' : todo.pri == 'B' ? 'A' : 'B';
         saveTodo(todo);
       },
