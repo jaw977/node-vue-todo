@@ -30,7 +30,13 @@ function msToString(ms) {
 }
 
 function stringToMs(str) {
-  return str ? +moment(str, dateTimeFormat) : Date.now();
+  if (! str) return Date.now();
+  let matches;
+  if (matches = str.match(/^(\d\d?)[/-](\d\d?)$/)) {
+    const now = moment();
+    str = `${now.year()}-${matches[1]}-${matches[2]}`;
+  }
+  return +moment(str, dateTimeFormat);
 }
 
 window.addEventListener('load', function () {
