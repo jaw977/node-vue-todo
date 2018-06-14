@@ -123,7 +123,7 @@ window.addEventListener('load', function () {
         }
         const todos = this.searchMode == 'Open'
           ? _.orderBy(this.matchingTodos, ['pri', 'open', 'number'], ['asc', 'asc', 'asc'])
-          : _.orderBy(this.matchingTodos, ['close', 'number'], ['desc', 'asc']);
+          : _.orderBy(this.matchingTodos, ['done', 'number'], ['desc', 'asc']);
         nextOrder = 1;
         for (let todo of todos) {
           todo.order = nextOrder++;
