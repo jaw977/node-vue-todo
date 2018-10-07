@@ -158,11 +158,13 @@ window.addEventListener('load', function () {
       },
       exportTodos: function() {
         this.mode = 'import';
-        this.importTextarea = _.orderBy(this.allTodos,['number'],['asc']).map( todo => {
-          const done = todo.done ? `x ${todo.done} ` : '';
-          const pri = todo.pri == 'A' || todo.pri == 'B' ? `(${todo.pri}) ` : '';
-          return done + pri + todo.open + ' ' + todo.desc;
-        }).join('\n');
+        this.importTextarea = _.orderBy(this.allTodos,['number'],['asc'])
+          .filter( todo => todo.desc.length )
+          .map( todo => {
+            const done = todo.done ? `x ${todo.done} ` : '';
+            const pri = todo.pri == 'A' || todo.pri == 'B' ? `(${todo.pri}) ` : '';
+            return done + pri + todo.open + ' ' + todo.desc;
+          }).join('\n');
         this.allTodos = [];
       },
     },
