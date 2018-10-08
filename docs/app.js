@@ -7,6 +7,7 @@ function newTodo (text) {
   if (! matches) return;
   let [,,done,,pri,,open,desc] = matches;
   open = open || currentDate();
+  done = done || false;
   pri = pri || 'C';
   const number = nextNumber++;
   const todo = { desc, number, open, pri, done };
