@@ -83,7 +83,8 @@ window.addEventListener('load', function () {
             this.editingTodo.desc = this.addTodoTextbox;
             if (! this.addTodoTextbox) this.editingTodo._deleted = true;
           }
-          else this.editingTodo.open = cleanDateString(this.addTodoTextbox);
+          else if (this.editingField == 'open') this.editingTodo.open = cleanDateString(this.addTodoTextbox);
+          else this.editingTodo.done = cleanDateString(this.addTodoTextbox);
           saveTodo(this.editingTodo);
         }
         else {
@@ -133,7 +134,8 @@ window.addEventListener('load', function () {
         this.editingTodo = todo;
         this.editingField = field;
         if (field == 'desc') this.addTodoTextbox = todo.desc;
-        else this.addTodoTextbox = todo.open;
+        else if (field == 'open') this.addTodoTextbox = todo.open;
+        else this.addTodoTextbox = todo.done;
         this.$refs.addTodoTextbox.focus();
       },
       dupTodo: function(todo) {
