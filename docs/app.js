@@ -46,10 +46,10 @@ window.addEventListener('load', function () {
   var vue = new Vue({
     el: '#app',
     data: {
-      numberOfCols: 3,
+      numberOfCols: 4,
       allTodos: [],
       addTodoTextbox: '',
-      searchMode: 'Open',
+      searchMode: 'All',
       searchTextbox: '',
       editingTodo: false,
       editingField: false,
@@ -114,18 +114,22 @@ window.addEventListener('load', function () {
         todo.pri = todo.pri == 'A' ? 'C' : todo.pri == 'B' ? 'A' : 'B';
         saveTodo(todo);
       },
-      clickSearchMode: function() {
-        this.searchMode = this.searchMode == 'Open' ? 'Done' : 'Open';
+      searchBtnClass: function(mode) {
+        return 'btn btn-block' + (mode === this.searchMode ? ' btn-info' : '');
+      },
+      clickSearchMode: function(mode) {
+        this.searchMode = mode;
         this.search();
       },
       search: function() {
         const searchText = this.searchTextbox.toLowerCase();
         for (let todo of this.allTodos) {
-          todo.matches = (this.searchMode == 'Open' ? ! todo.done : !! todo.done) && todo.desc.toLowerCase().includes(searchText);
+          todo.matches = (this.searchMode == 'All' || (this.searchMode == 'Open' ? ! todo.done : !! todo.done)) 
+            && todo.desc.toLowerCase().includes(searchText);
         }
-        const todos = this.searchMode == 'Open'
-          ? _.orderBy(this.matchingTodos, ['pri', 'open', 'number'], ['asc', 'asc', 'asc'])
-          : _.orderBy(this.matchingTodos, ['done', 'number'], ['desc', 'asc']);
+        const openTodos = _.orderBy(this.matchingTodos.filter(t => ! t.done), ['pri', 'open', 'number'], ['asc', 'asc', 'asc'])
+        const closedTodos = _.orderBy(this.matchingTodos.filter(t => t.done), ['done', 'number'], ['desc', 'asc'])
+        const todos = _.concat(openTodos, closedTodos);
         nextOrder = 1;
         for (let todo of todos) {
           todo.order = nextOrder++;
