@@ -102,7 +102,10 @@ window.addEventListener('load', function () {
         return 'btn btn-xs' + (todo.pri == 'A' ? ' btn-danger' : todo.pri == 'B' ? ' btn-primary' : '') + (todo.done ? ' disabled' : '');
       },
       descClass: function(todo) {
-        return todo.done ? 'done' : todo.open > currentDate() ? 'future' : '';
+        const today = currentDate();
+        return todo.done === today ? 'donetoday'
+          : todo.done ? 'donepast'
+          : todo.open > today ? 'future' : '';
       },
       toggleDone: function(todo) {
         todo.done = todo.done ? false : currentDate();
