@@ -130,7 +130,7 @@ window.addEventListener('load', function () {
           todo.matches = (this.searchMode == 'All' || (this.searchMode == 'Open' ? ! todo.done : !! todo.done)) 
             && todo.desc.toLowerCase().includes(searchText);
         }
-        const openTodos = _.orderBy(this.matchingTodos.filter(t => ! t.done), ['pri', 'open', 'number'], ['asc', 'asc', 'asc'])
+        const openTodos = _.orderBy(this.matchingTodos.filter(t => ! t.done), ['open', 'number'], ['asc', 'asc', 'asc'])
         const closedTodos = _.orderBy(this.matchingTodos.filter(t => t.done), ['done', 'number'], ['desc', 'asc'])
         const todos = _.concat(openTodos, closedTodos);
         nextOrder = 1;
