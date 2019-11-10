@@ -99,7 +99,7 @@ window.addEventListener('load', function () {
         return 'glyphicon glyphicon-' + (todo.done ? 'check' : 'unchecked');
       },
       priClass: function(todo) {
-        return 'btn btn-xs' + (todo.pri == 'A' ? ' btn-danger' : todo.pri == 'B' ? ' btn-primary' : '') + (todo.done ? ' disabled' : '');
+        return 'btn btn-xs btn-' + (todo.done ? 'hidden' : todo.pri == 'A' ? 'danger' : todo.pri == 'B' ? 'primary' : 'c');
       },
       descClass: function(todo) {
         const today = currentDate();
