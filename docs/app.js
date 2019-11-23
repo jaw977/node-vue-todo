@@ -31,6 +31,10 @@ function currentDate() {
   return moment().format(dateFormat);
 }
 
+function pastDates() {
+  const m = moment();
+  return [3, 4, 7].map( d => m.subtract(d, "days").format(dateFormat) );
+}
 
 function cleanDateString(str) {
   let matches = str.match(/^(\d\d?)[/-](\d\d?)$/);
@@ -103,9 +107,15 @@ window.addEventListener('load', function () {
       },
       descClass: function(todo) {
         const today = currentDate();
+        const [old1, old2, old3] = pastDates();
+        console.log([today, old1, old2, old3]);
         return todo.done === today ? 'donetoday'
           : todo.done ? 'donepast'
-          : todo.open > today ? 'future' : '';
+          : todo.open > today ? 'future'
+          : todo.open < old3 ? 'old3'
+          : todo.open < old2 ? 'old2'
+          : todo.open < old1 ? 'old1' 
+          : '';
       },
       toggleDone: function(todo) {
         todo.done = todo.done ? false : currentDate();
