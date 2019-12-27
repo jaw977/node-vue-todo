@@ -108,7 +108,6 @@ window.addEventListener('load', function () {
       descClass: function(todo) {
         const today = currentDate();
         const [old1, old2, old3] = pastDates();
-        console.log([today, old1, old2, old3]);
         return todo.done === today ? 'donetoday'
           : todo.done ? 'donepast'
           : todo.open > today ? 'future'
@@ -189,6 +188,9 @@ window.addEventListener('load', function () {
       },
     },
   });
+  const calcNumberOfCols = () => vue.numberOfCols = Math.floor(document.body.clientWidth / 450);
+  calcNumberOfCols();
+  window.addEventListener("resize", calcNumberOfCols);
 });
 
 var dateFormat = 'YYYY-MM-DD';
